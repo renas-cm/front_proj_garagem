@@ -1,18 +1,23 @@
-import axios from 'axios'
+import axios from 'axios';
 
-// axios.defaults.baseURL = 'http://0.0.0.0:19003/api'
-// axios.defaults.baseURL = "http://localhost:19003/api";
-axios.defaults.baseURL = "https://livraria-marrcandre-2024.onrender.com/api";
+// Configura a baseURL usando a variável de ambiente
+// axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
+// console.log('API Base URL:', process.env.VUE_APP_API_BASE_URL);
 
+axios.defaults.baseURL = 'http://0.0.0.0:19003/api/';
+
+// Adiciona um interceptor para incluir o token de autenticação
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('psg_auth_token')
+    const token = localStorage.getItem('psg_auth_token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
   },
   (error) => {
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
+
+export default axios;

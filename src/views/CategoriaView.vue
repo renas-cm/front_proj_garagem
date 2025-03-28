@@ -1,14 +1,14 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import CategoriasApi from "@/api/categorias";
-const categoriasApi = new CategoriasApi();
+import { useCategoriaStore } from "@/stores/categoria";
+
+const categoriaStore = useCategoriaStore();
 
 const defaultCategoria = { id: null, descricao: "" };
-const categorias = ref([]);
 const categoria = reactive({ ...defaultCategoria });
 
 onMounted(async () => {
-  categorias.value = await categoriasApi.buscarTodasAsCategorias();
+  await categoriaStore.getCategorias()
 });
 
 function limpar() {
@@ -45,13 +45,18 @@ async function excluir(id) {
       <button @click="limpar">Limpar</button>
     </div>
     <ul class="categoria-list">
-      <li v-for="categoria in categorias" :key="categoria.id">
+      <li v-for="categoria in categoriaStore.categorias" :key="categoria.id">
         <span @click="editar(categoria)">
           ({{ categoria.id }}) - {{ categoria.descricao }}
         </span>
         <button @click="excluir(categoria.id)">Excluir</button>
       </li>
     </ul>
+    <div class="paginator">
+      <button @click="categoriaStore.paginaAnterior" >Anterior</button>
+      <button @click="categoriaStore.proximaPagina" >Próxima</button>
+      <span>Página {{ categoriaStore.meta.page }} de {{ categoriaStore.meta.total_pages }}</span>
+    </div>
   </div>
 </template>
 

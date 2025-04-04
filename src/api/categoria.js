@@ -13,7 +13,6 @@ export default class CategoriaApi {
     return data.results;
   }
   async excluirCategoria(id) {
-    const { data } = await axios.delete(`/categorias/${id}/`);
-    return data.results;
+    await axios.delete(`/categorias/${id}/`);
   }
 }

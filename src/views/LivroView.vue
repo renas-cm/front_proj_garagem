@@ -1,7 +1,10 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
+import { useCategoriaStore } from "@/stores/categoria";
 import LivrosApi from "@/api/livros";
 const livrosApi = new LivrosApi();
+
+const categoriaStore = useCategoriaStore()
 
 const defaultLivro = {
   id: null,
@@ -15,7 +18,8 @@ const livros = ref([]);
 const livro = reactive({ ...defaultLivro });
 
 onMounted(async () => {
-  livros.value = await livrosApi.buscarTodosOsLivros();
+  // livros.value = await livrosApi.buscarTodosOsLivros();
+  await categoriaStore.getCategorias();
 });
 
 function limpar() {
@@ -41,6 +45,11 @@ async function excluir(id) {
   livros.value = await livrosApi.buscarTodosOsLivros();
   limpar();
 }
+
+function mostrar() {
+  console.log('teste')
+}
+
 </script>
 
 <template>
@@ -48,7 +57,18 @@ async function excluir(id) {
       <h1>Gerenciamento de Livros</h1>
       <div class="form">
         <input type="text" v-model="livro.titulo" placeholder="Título" />
-        <input type="text" v-model="livro.categoria" placeholder="Categoria" />
+        <input @keypress="mostrar" type="text" v-model="livro.categoria" list="categorias" placeholder="Categoria" />
+        <datalist id="categorias" >
+          <option v-for="categoria in categoriaStore.categorias" :key="categoria.id" :value="categoria.descricao">
+            {{ categoria.descricao }}
+          </option>
+          <option v-if="categoriaStore.meta.total_pages > 1">Tem mais..</option>
+        </datalist>
+        <!-- <datalist placeholder="Categoria">
+          <option v-for="categoria in categoriaStore.categorias" :key="categoria.id" :value="categoria.id">
+            {{ categoria.descricao }}
+          </option>
+        </datalist> -->
         <input type="text" v-model="livro.editora" placeholder="Editora" />
         <input type="text" v-model="livro.autores" placeholder="Autores" />
         <input type="text" v-model="livro.capa" placeholder="URL da Capa" />

@@ -1,38 +1,32 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useCategoriaStore } from "@/stores/categoria";
+import { reactive, onMounted } from 'vue'
+import { useCategoriaStore } from '@/stores/categoria'
 
-const categoriaStore = useCategoriaStore();
+const categoriaStore = useCategoriaStore()
 
-const defaultCategoria = { id: null, descricao: "" };
-const categoria = reactive({ ...defaultCategoria });
+const defaultCategoria = { id: null, descricao: '' }
+const categoria = reactive({ ...defaultCategoria })
 
 onMounted(async () => {
   await categoriaStore.getCategorias()
-});
+})
 
 function limpar() {
-  Object.assign(categoria, { ...defaultCategoria });
+  Object.assign(categoria, { ...defaultCategoria })
 }
 
 async function salvar() {
-  if (categoria.id) {
-    await categoriasApi.atualizarCategoria(categoria);
-  } else {
-    await categoriasApi.adicionarCategoria(categoria);
-  }
-  categorias.value = await categoriasApi.buscarTodasAsCategorias();
-  limpar();
+  await categoriaStore.salvarCategoria({ ...categoria })
+  limpar()
 }
 
 function editar(categoria_para_editar) {
-  Object.assign(categoria, categoria_para_editar);
+  Object.assign(categoria, categoria_para_editar)
 }
 
 async function excluir(id) {
-  await categoriasApi.excluirCategoria(id);
-  categorias.value = await categoriasApi.buscarTodasAsCategorias();
-  limpar();
+  await categoriaStore.excluirCategoria(id)
+  limpar()
 }
 </script>
 
@@ -46,23 +40,29 @@ async function excluir(id) {
     </div>
     <ul class="categoria-list">
       <li v-for="categoria in categoriaStore.categorias" :key="categoria.id">
-        <span @click="editar(categoria)">
-          ({{ categoria.id }}) - {{ categoria.descricao }}
-        </span>
+        <span @click="editar(categoria)"> ({{ categoria.id }}) - {{ categoria.descricao }} </span>
         <button @click="excluir(categoria.id)">Excluir</button>
       </li>
     </ul>
     <div class="paginator">
-      <button @click="categoriaStore.paginaAnterior" >Anterior</button>
-      <button @click="categoriaStore.proximaPagina" >Próxima</button>
+      <button :disabled="categoriaStore.meta.page == 1" @click="categoriaStore.paginaAnterior">
+        Anterior
+      </button>
+      <button
+        :disabled="categoriaStore.meta.page == categoriaStore.meta.total_pages"
+        @click="categoriaStore.proximaPagina"
+      >
+        Próxima
+      </button>
       <span>Página {{ categoriaStore.meta.page }} de {{ categoriaStore.meta.total_pages }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
+
 body {
-  font-family: "Arial", sans-serif;
+  font-family: 'Arial', sans-serif;
   background-color: #f4f4f9;
   margin: 0;
   padding: 0;
@@ -92,7 +92,7 @@ h1 {
   margin-bottom: 30px;
 }
 
-input[type="text"] {
+input[type='text'] {
   padding: 12px;
   font-size: 1rem;
   border: 1px solid #ccc;
@@ -102,7 +102,7 @@ input[type="text"] {
   transition: border-color 0.3s;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
   border-color: #343a40;
   outline: none;
 }
@@ -118,8 +118,18 @@ button {
   transition: background-color 0.3s;
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 button:hover {
   background-color: #000;
+}
+
+button:disabled:hover {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .categoria-list {
@@ -171,7 +181,7 @@ li button:hover {
     gap: 10px;
   }
 
-  input[type="text"] {
+  input[type='text'] {
     width: 100%;
   }
 

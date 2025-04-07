@@ -5,6 +5,7 @@ import axios from 'axios';
 // console.log('API Base URL:', process.env.VUE_APP_API_BASE_URL);
 
 axios.defaults.baseURL = 'http://0.0.0.0:19003/api/';
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/api/';
 
 // Adiciona um interceptor para incluir o token de autenticação
 axios.interceptors.request.use(

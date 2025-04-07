@@ -6,19 +6,27 @@ import CategoriaApi from '@/api/categoria'
 const categoriaApi = new CategoriaApi()
 
 export const useCategoriaStore = defineStore('categoria', () => {
-  const categorias = ref([])
+  const categorias = ref([{
+    id: 1,
+    descricao: 'Categoria 1',
+  }])
   const meta = ref({
     page: 0,
     page_size: 0,
     total_pages: 0
   })
 
-  async function getCategorias(page = 1) {
-    const data = await categoriaApi.buscarTodasAsCategorias(page)
+  async function getCategorias(page = 1, search = '') {
+    const data = await categoriaApi.buscarTodasAsCategorias(page, search)
     categorias.value = data.results
     meta.value.page = data.page
     meta.value.page_size = data.page_size
     meta.value.total_pages = data.total_pages
+  }
+
+  async function search(text) {
+    console.log(text)
+    await getCategorias(1, text)
   }
 
   async function excluirCategoria(id) {
@@ -52,6 +60,7 @@ export const useCategoriaStore = defineStore('categoria', () => {
     getCategorias,
     salvarCategoria,
     excluirCategoria,
+    search,
     proximaPagina,
     paginaAnterior
   }

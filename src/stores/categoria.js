@@ -6,10 +6,20 @@ import CategoriaApi from '@/api/categoria'
 const categoriaApi = new CategoriaApi()
 
 export const useCategoriaStore = defineStore('categoria', () => {
-  const categorias = ref([{
-    id: 1,
-    descricao: 'Categoria 1',
-  }])
+  const categorias = ref([
+    {
+      id: 1,
+      descricao: 'Categoria 1'
+    },
+    {
+      id: 2,
+      descricao: 'Categoria 2'
+    },
+    {
+      id: 3,
+      descricao: 'Categoria 3'
+    }
+  ])
   const meta = ref({
     page: 0,
     page_size: 0,

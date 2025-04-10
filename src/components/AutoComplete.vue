@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const props = defineProps({
   items: {
     type: Object,
@@ -19,38 +19,89 @@ const props = defineProps({
   },
 });
 
+const handleKeyDown = (event) => {
+  if (!searching.value) return;
+
+  const items = Object.values(props.items);
+  const totalItems = items.length;
+
+  switch (event.key) {
+    case 'ArrowDown':
+      event.preventDefault();
+      selectedItemIndex.value = (selectedItemIndex.value + 1) % totalItems;
+      break;
+    case 'ArrowUp':
+      event.preventDefault();
+      selectedItemIndex.value = (selectedItemIndex.value - 1 + totalItems) % totalItems;
+      break;
+    case 'Enter':
+      if (selectedItemIndex.value >= 0) {
+        const selectedItem = items[selectedItemIndex.value];
+        selectItem(selectedItem);
+      }
+      break;
+    case 'Escape':
+      searching.value = false;
+      selectedItemIndex.value = -1;
+      break;
+  }
+};
+
 const model = defineModel();
-const value = ref("");
+const value = ref(model.value || "");
 
 const searching = ref(false);
 const timer = ref(null);
 
+
 const selectItem = (item) => {
   model.value = item.id;
   value.value = item[props.itemText];
+  searching.value = false;
 };
 
 const filterItems = (event) => {
-  const searchTerm = event.target.value.toLowerCase();
+  const searchTerm = event.target.value;
   value.value = searchTerm;
   clearTimeout(timer.value);
   timer.value = setTimeout(() => {
     props.search(searchTerm);
   }, 500);
 };
+
+const selectedItemIndex = ref(-1); // Novo estado para rastrear o item selecionado
+
+
+const openSearch = () => {
+  searching.value = true
+  document.getElementById("autocomplete-list").focus();
+}
+
+// watch(value, (newValue) => {
+//   model.value = newValue;
+// });
+
+// watch(model, (newValue) => {
+//   value.value = newValue;
+// });
 </script>
 <template>
-  <div class="autocomplete">
+  <div class="autocomplete" @keydown="handleKeyDown">
     <input
-      @input="filterItems"
+      v-model="value"
       type="text"
-      :value="value"
       :placeholder="props.placeholder"
-      @focus="searching = true"
+      @focus="openSearch"
     />
-    <ul v-show="searching" class="autocomplete-list">
-      <li v-for="item in props.items" :key="item.id" @click="selectItem(item)">
-        {{ item[itemText] }}
+    <ul v-show="searching" id="autocomplete-list" class="autocomplete-list">
+      <li
+        v-for="(item, index) in props.items"
+        :key="item.id"
+        @click="selectItem(item)"
+        :class="{ 'selected-item': selectedItemIndex === index }"
+        tabindex="0"
+      >
+        {{ item[props.itemText] }}
       </li>
     </ul>
   </div>
@@ -79,5 +130,10 @@ const filterItems = (event) => {
 }
 .autocomplete-list li:hover {
   background-color: #f0f0f0;
+}
+
+.selected-item {
+  background-color: #e3f2fd;
+  color: #1976d2;
 }
 </style>

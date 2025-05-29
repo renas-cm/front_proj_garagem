@@ -26,21 +26,21 @@ const handleKeyDown = (event) => {
   const totalItems = items.length;
 
   switch (event.key) {
-    case 'ArrowDown':
+    case "ArrowDown":
       event.preventDefault();
       selectedItemIndex.value = (selectedItemIndex.value + 1) % totalItems;
       break;
-    case 'ArrowUp':
+    case "ArrowUp":
       event.preventDefault();
       selectedItemIndex.value = (selectedItemIndex.value - 1 + totalItems) % totalItems;
       break;
-    case 'Enter':
+    case "Enter":
       if (selectedItemIndex.value >= 0) {
         const selectedItem = items[selectedItemIndex.value];
         selectItem(selectedItem);
       }
       break;
-    case 'Escape':
+    case "Escape":
       searching.value = false;
       selectedItemIndex.value = -1;
       break;
@@ -52,7 +52,6 @@ const value = ref(model.value || "");
 
 const searching = ref(false);
 const timer = ref(null);
-
 
 const selectItem = (item) => {
   model.value = item.id;
@@ -71,11 +70,10 @@ const filterItems = (event) => {
 
 const selectedItemIndex = ref(-1); // Novo estado para rastrear o item selecionado
 
-
 const openSearch = () => {
-  searching.value = true
+  searching.value = true;
   document.getElementById("autocomplete-list").focus();
-}
+};
 
 // watch(value, (newValue) => {
 //   model.value = newValue;
@@ -86,24 +84,27 @@ const openSearch = () => {
 // });
 </script>
 <template>
-  <div class="autocomplete" @keydown="handleKeyDown">
-    <input
-      v-model="value"
-      type="text"
-      :placeholder="props.placeholder"
-      @focus="openSearch"
-    />
-    <ul v-show="searching" id="autocomplete-list" class="autocomplete-list">
-      <li
-        v-for="(item, index) in props.items"
-        :key="item.id"
-        @click="selectItem(item)"
-        :class="{ 'selected-item': selectedItemIndex === index }"
-        tabindex="0"
-      >
-        {{ item[props.itemText] }}
-      </li>
-    </ul>
+  <div @keydown="handleKeyDown">
+    <div class="autocomplete">
+      <input
+        @input="filterItems"
+        :value="value"
+        type="text"
+        :placeholder="props.placeholder"
+        @focus="openSearch"
+      />
+      <ul v-show="searching" id="autocomplete-list" class="autocomplete-list">
+        <li
+          v-for="(item, index) in props.items"
+          :key="item.id"
+          @click="selectItem(item)"
+          :class="{ 'selected-item': selectedItemIndex === index }"
+          tabindex="0"
+        >
+          {{ item[props.itemText] }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 

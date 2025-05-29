@@ -4,21 +4,6 @@
   padding: 0;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-}
-
 input[type="text"] {
   padding: 12px;
   font-size: 1rem;
@@ -32,4 +17,63 @@ input[type="text"] {
 input[type="text"]:focus {
   border-color: #343a40;
   outline: none;
+}
+
+.row {
+  display: flex;
+  min-width: 100%;
+  max-width: 100%;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.col-8 {
+  min-width: 66.666667%;
+  max-width: 66.666667%;
+}
+
+.col-6 {
+  min-width: 50%;
+  max-width: 50%;
+}
+
+.col-4 {
+  min-width: 33.333333%;
+  max-width: 33.333333%;
+}
+
+.col-10 {
+  min-width: 83.333333%;
+  max-width: 83.333333%;
+}
+
+.col-2 {
+  min-width: 16.666667%;
+  max-width: 16.666667%;
+}
+
+.col-12 {
+  min-width: 100%;
+  max-width: 100%;
+}
+
+
+button {
+  padding: 12px 25px;
+  font-size: 1rem;
+  background-color: #343a40;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #000;
+}
+
+.gap-20 {
+  gap: 10px;
 }

@@ -1,50 +1,25 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useCategoriaStore } from "@/stores/categoria";
-import AutoComplete from "@/components/AutoComplete.vue";
+import { ref, onMounted } from "vue";
+import ModalAdicionarLivro from "../components/livros/ModalAdicionarLivro.vue";
 import LivrosApi from "@/api/livros";
 const livrosApi = new LivrosApi();
 
-const categoriaStore = useCategoriaStore();
+const showModal = ref(false);
 
-const defaultLivro = {
-  id: null,
-  titulo: "",
-  categoria: "",
-  editora: "",
-  autores: "",
-  capa: "",
-};
 const livros = ref([]);
-const livro = reactive({ ...defaultLivro });
 
 onMounted(async () => {
   // livros.value = await livrosApi.buscarTodosOsLivros();
-  await categoriaStore.getCategorias();
+  // await categoriaStore.getCategorias();
 });
 
-function limpar() {
-  Object.assign(livro, { ...defaultLivro });
-}
-
-async function salvar() {
-  if (livro.id) {
-    await livrosApi.atualizarLivro(livro);
-  } else {
-    await livrosApi.adicionarLivro(livro);
-  }
-  livros.value = await livrosApi.buscarTodosOsLivros();
-  limpar();
-}
-
-function editar(livroParaEditar) {
-  Object.assign(livro, livroParaEditar);
-}
+// function editar(livroParaEditar) {
+//   Object.assign(livro, livroParaEditar);
+// }
 
 async function excluir(id) {
   await livrosApi.excluirLivro(id);
   livros.value = await livrosApi.buscarTodosOsLivros();
-  limpar();
 }
 
 function mostrar() {
@@ -54,23 +29,8 @@ function mostrar() {
 
 <template>
   <div class="container">
-    {{ livro }}
+    <button @click="showModal = true">+</button>
     <h1>Gerenciamento de Livros</h1>
-    <div class="form">
-      <input type="text" v-model="livro.titulo" placeholder="Título" />
-      <auto-complete
-        v-model="livro.categoria"
-        :items="categoriaStore.categorias"
-        :search="categoriaStore.search"
-        item-text="descricao"
-        placeholder="Categoria"
-      />
-      <input type="text" v-model="livro.editora" placeholder="Editora" />
-      <input type="text" v-model="livro.autores" placeholder="Autores" />
-      <input type="text" v-model="livro.capa" placeholder="URL da Capa" />
-      <button @click="salvar">Salvar</button>
-      <button @click="limpar">Limpar</button>
-    </div>
     <ul class="livros-list">
       <li v-for="livro in livros" :key="livro.id">
         <div class="livro-info" @click="editar(livro)">
@@ -91,6 +51,7 @@ function mostrar() {
       </li>
     </ul>
   </div>
+  <modal-adicionar-livro v-if="showModal" @close="showModal = false" />
 </template>
 
 <style scoped>
@@ -124,21 +85,6 @@ h1 {
   justify-content: center;
   align-items: center;
   margin-bottom: 30px;
-}
-
-button {
-  padding: 12px 25px;
-  font-size: 1rem;
-  background-color: #343a40;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #000;
 }
 
 .livros-list {

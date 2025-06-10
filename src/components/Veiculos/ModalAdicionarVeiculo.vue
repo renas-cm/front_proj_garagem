@@ -1,21 +1,21 @@
 <script setup>
 import { reactive, onMounted, ref } from "vue";
 import AutoComplete from "@/components/AutoComplete.vue";
-import { useCategoriaStore } from "@/stores/categoria";
-import { useEditoraStore } from "@/stores/editora";
+import { useVeiculoStore } from "@/stores/veiculo.js";
+import { useModeloStore } from "@/stores/modelo.js";
 
-const categoriaStore = useCategoriaStore();
-const editoraStore = useEditoraStore();
+const veiculoStore = useVeiculoStore();
+const modeloStore = useModeloStore();
 
-const defaultLivro = {
+const defaultVeiculo = {
   id: null,
-  titulo: "",
-  categoria: "",
-  editora: "",
-  autores: "",
-  capa: "",
+  placa: "",
+  modelo: "",
+  cor: "",
+  ano: "",
+  imagem: "",
 };
-const livro = reactive({ ...defaultLivro });
+const veiculo = reactive({ ...defaultVeiculo });
 const imagePreview = ref(null);
 
 function openSelectImage() {
@@ -31,29 +31,31 @@ function selectImage(evt) {
     const reader = new FileReader();
     reader.onload = (e) => {
       imagePreview.value = e.target.result;
+      veiculo.imagem = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 }
 
 function limpar() {
-  Object.assign(livro, { ...defaultLivro });
+  Object.assign(veiculo, { ...defaultVeiculo });
+  imagePreview.value = null;
 }
 
 async function salvar() {
   alert("TODO: salvar");
-  if (livro.id) {
-    // await livrosApi.atualizarLivro(livro);
+  if (veiculo.id) {
+    // await veiculoStore.atualizarVeiculo(veiculo);
   } else {
-    // await livrosApi.adicionarLivro(livro);
+    // await veiculoStore.adicionarVeiculo(veiculo);
   }
-  //   livros.value = await livrosApi.buscarTodosOsLivros();
+  // await veiculoStore.buscarTodos();
   limpar();
 }
 
 onMounted(() => {
-  categoriaStore.getCategorias();
-  editoraStore.getEditoras();
+  modeloStore.fetchModelos();
+  veiculoStore.fetchVeiculos();
 });
 </script>
 
@@ -62,38 +64,35 @@ onMounted(() => {
     <div class="content">
       <div class="row gap-20">
         <div class="col-10">
-          <h1>Adicionar Livro</h1>
+          <h1>Adicionar Veículo</h1>
           <div class="form">
             <div class="row">
               <input
-                class="col-8"
+                class="col-4"
                 type="text"
-                v-model="livro.titulo"
-                placeholder="Título"
+                v-model="veiculo.placa"
+                placeholder="Placa"
               />
               <auto-complete
                 class="col-4"
-                v-model="livro.categoria"
-                :items="categoriaStore.categorias"
-                :search="categoriaStore.search"
-                item-text="descricao"
-                placeholder="Categoria"
+                v-model="veiculo.modelo"
+                :items="modeloStore.modelos"
+                item-text="nome"
+                placeholder="Modelo"
+              />
+              <input
+                class="col-4"
+                type="text"
+                v-model="veiculo.cor"
+                placeholder="Cor"
               />
             </div>
             <div class="row">
-              <auto-complete
-                class="col-4"
-                v-model="livro.editora"
-                :items="editoraStore.editoras"
-                :search="editoraStore.search"
-                item-text="nome"
-                placeholder="Editora"
-              />
               <input
-                type="text"
-                class="col-6"
-                v-model="livro.autores"
-                placeholder="Autores"
+                class="col-4"
+                type="number"
+                v-model="veiculo.ano"
+                placeholder="Ano"
               />
             </div>
             <form />
@@ -104,10 +103,10 @@ onMounted(() => {
             <img
               class="image-preview"
               :src="imagePreview || 'https://placehold.co/100x150?text=?'"
-              alt="Capa do Livro"
+              alt="Imagem do Veículo"
             />
           </div>
-          <input type="file" hidden="selectImage" @input="selectImage" />
+          <input type="file" hidden @input="selectImage" />
           <div class="button-actions">
             <button @click="salvar">Salvar</button>
             <button @click="limpar">Limpar</button>

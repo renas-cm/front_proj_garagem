@@ -21,9 +21,9 @@ const toggleDropdown = () => {
   <header class="navbar">
     <nav>
       <div class="nav-left">
-        <router-link :to="{ name: 'home' }" class="logo">Livraria</router-link>
-        <router-link :to="{ name: 'categorias' }">Categorias</router-link>
-        <router-link :to="{ name: 'livros' }">Livros</router-link>
+        <router-link :to="{ name: 'home' }" class="logo">Garagem</router-link>
+        <router-link :to="{ name: 'veiculos' }">Veiculos</router-link>
+        <router-link :to="{ name: 'modelos' }">Modelos</router-link>
       </div>
 
       <div class="nav-right" v-if="isLoggedIn">

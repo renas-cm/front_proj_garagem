@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import CategoriaView from "../views/CategoriaView.vue";
+import ModeloView from "../views/ModeloView.vue";
 import LoginView from "../views/LoginView.vue";
 import LogoutView from "../views/LogoutView.vue";
 import UsuarioView from "../views/UsuarioView.vue";
-import LivroView from "../views/LivroView.vue";
+import VeiculoView from "../views/VeiculoView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,14 +15,14 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/categorias",
-      name: "categorias",
-      component: CategoriaView,
+      path: "/modelos",
+      name: "modelos",
+      component: ModeloView,
     },
     {
-      path: "/livros",
-      name: "livros",
-      component: LivroView,
+      path: "/veiculos",
+      name: "veiculos",
+      component: VeiculoView,
     },
     {
       path: "/login",

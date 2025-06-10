@@ -1,66 +1,66 @@
 <script setup>
 import { reactive, onMounted } from 'vue'
-import { useCategoriaStore } from '@/stores/categoria'
+import { useModeloStore } from '@/stores/modelo'
 
-const categoriaStore = useCategoriaStore()
+const modeloStore = useModeloStore()
 
-const defaultCategoria = { id: null, descricao: '' }
-const categoria = reactive({ ...defaultCategoria })
+const defaultModelo = { id: null, descricao: '' }
+const modelo = reactive({ ...defaultModelo })
 
 onMounted(async () => {
-  await categoriaStore.getCategorias()
+  await modeloStore.getModelos()
 })
 
 function limpar() {
-  Object.assign(categoria, { ...defaultCategoria })
+  Object.assign(modelo, { ...defaultModelo })
 }
 
 async function salvar() {
-  await categoriaStore.salvarCategoria({ ...categoria })
+  await modeloStore.salvarModelo({ ...modelo })
   limpar()
 }
 
-function editar(categoria_para_editar) {
-  Object.assign(categoria, categoria_para_editar)
+function editar(modelo_para_editar) {
+  Object.assign(modelo, modelo_para_editar)
 }
 
 async function excluir(id) {
-  await categoriaStore.excluirCategoria(id)
+  await modeloStore.excluirModelo(id)
   limpar()
 }
 </script>
 
 <template>
   <div class="container">
-    <h1>Categorias</h1>
+    <h1>Modelos</h1>
     <div class="form">
-      <input type="text" v-model="categoria.descricao" placeholder="Descrição" />
+      <input type="text" v-model="modelo.descricao" placeholder="Descrição" />
       <button @click="salvar">Salvar</button>
       <button @click="limpar">Limpar</button>
     </div>
     <ul class="categoria-list">
-      <li v-for="categoria in categoriaStore.categorias" :key="categoria.id">
-        <span @click="editar(categoria)"> ({{ categoria.id }}) - {{ categoria.descricao }} </span>
-        <button @click="excluir(categoria.id)">Excluir</button>
+      <li v-for="modelo in modeloStore.modelos" :key="modelo.id">
+        <span @click="editar(modelo)"> ({{ modelo.id }}) - {{ modelo.descricao }} </span>
+        <button @click="excluir(modelo.id)">Excluir</button>
       </li>
     </ul>
     <div class="paginator">
-      <button :disabled="categoriaStore.meta.page == 1" @click="categoriaStore.paginaAnterior">
+      <button :disabled="modeloStore.meta.page == 1" @click="modeloStore.paginaAnterior">
         Anterior
       </button>
       <button
-        :disabled="categoriaStore.meta.page == categoriaStore.meta.total_pages"
-        @click="categoriaStore.proximaPagina"
+        :disabled="modeloStore.meta.page == modeloStore.meta.total_pages"
+        @click="modeloStore.proximaPagina"
       >
         Próxima
       </button>
-      <span>Página {{ categoriaStore.meta.page }} de {{ categoriaStore.meta.total_pages }}</span>
+      <span>Página {{ modeloStore.meta.page }} de {{ modeloStore.meta.total_pages }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-
+/* (mantém o mesmo CSS) */
 body {
   font-family: 'Arial', sans-serif;
   background-color: #f4f4f9;

@@ -1,57 +1,51 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import ModalAdicionarLivro from "../components/livros/ModalAdicionarLivro.vue";
-import LivrosApi from "@/api/livros";
-const livrosApi = new LivrosApi();
+import { useVeiculoStore } from "@/stores/veiculo";
+import ModalAdicionarVeiculo from "../components/Veiculos/ModalAdicionarVeiculo.vue";
 
+const veiculoStore = useVeiculoStore();
 const showModal = ref(false);
 
-const livros = ref([]);
-
 onMounted(async () => {
-  // livros.value = await livrosApi.buscarTodosOsLivros();
-  // await categoriaStore.getCategorias();
+  await veiculoStore.getVeiculos();
 });
 
-// function editar(livroParaEditar) {
-//   Object.assign(livro, livroParaEditar);
-// }
-
 async function excluir(id) {
-  await livrosApi.excluirLivro(id);
-  livros.value = await livrosApi.buscarTodosOsLivros();
+  await veiculoStore.excluirVeiculo(id);
+  await veiculoStore.getVeiculos();
 }
 
-function mostrar() {
-  console.log("teste");
+function editar(veiculoParaEditar) {
+  // Implemente a lógica de edição conforme necessário
+  // Exemplo: veiculoStore.setVeiculoParaEditar(veiculoParaEditar);
 }
 </script>
 
 <template>
   <div class="container">
     <button @click="showModal = true">+</button>
-    <h1>Gerenciamento de Livros</h1>
+    <h1>Gerenciamento de Veículos</h1>
     <ul class="livros-list">
-      <li v-for="livro in livros" :key="livro.id">
-        <div class="livro-info" @click="editar(livro)">
+      <li v-for="veiculo in veiculoStore.veiculos" :key="veiculo.id">
+        <div class="livro-info" @click="editar(veiculo)">
           <img
-            :src="livro.capa || 'https://via.placeholder.com/150'"
-            alt="Capa do Livro"
+            :src="veiculo.imagem || 'https://via.placeholder.com/150'"
+            alt="Imagem do Veículo"
             class="livro-capa"
           />
           <div>
-            <strong>ID:</strong> {{ livro.id }} <br />
-            <strong>Título:</strong> {{ livro.titulo }} <br />
-            <strong>Categoria:</strong> {{ livro.categoria }} <br />
-            <strong>Editora:</strong> {{ livro.editora }} <br />
-            <strong>Autores:</strong> {{ livro.autores }}
+            <strong>ID:</strong> {{ veiculo.id }} <br />
+            <strong>Modelo:</strong> {{ veiculo.modelo }} <br />
+            <strong>Marca:</strong> {{ veiculo.marca }} <br />
+            <strong>Ano:</strong> {{ veiculo.ano }} <br />
+            <strong>Cor:</strong> {{ veiculo.cor }}
           </div>
         </div>
-        <button @click="excluir(livro.id)">Excluir</button>
+        <button @click="excluir(veiculo.id)">Excluir</button>
       </li>
     </ul>
   </div>
-  <modal-adicionar-livro v-if="showModal" @close="showModal = false" />
+  <ModalAdicionarVeiculo v-if="showModal" @close="showModal = false" />
 </template>
 
 <style scoped>
